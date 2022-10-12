@@ -2,11 +2,13 @@ package com.dmswide.nowcoder.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@RequestMapping("/alpha")
 public class AlphaController {
-    @GetMapping("/alpha")
+    @GetMapping("/hello")
     @ResponseBody
     public String sayHello(){
         return "hello springboot!";
