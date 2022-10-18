@@ -26,6 +26,8 @@ public class UserServiceImpl implements UserService, CommunityConstant {
     private MailClient mailClient;
     @Resource
     private TemplateEngine templateEngine;
+    @Resource
+    private LoginTicketMapper loginTicketMapper;
     @Value("${nowcoder.path.domain}")
     private String domain;
     @Value("${server.servlet.context-path}")
