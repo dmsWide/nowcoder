@@ -28,6 +28,7 @@
         where email = #{email}
     </select>
 
+    <!--keyProperty将生成的自增主键赋值javabean属性id,id是属性不是数据表中的列,同时配置文件配置use-generated-keys: true-->
     <insert id="insertUser" parameterType="com.dmswide.nowcoder.entity.User" keyProperty="id">
         insert into community.user(username, password, salt, email, type, status, activation_code, header_url, create_time)
         values(#{username},#{password},#{salt},#{email},#{type},#{status},#{activationCode},#{headerUrl},#{createTime})

@@ -1,15 +1,19 @@
 package com.dmswide.nowcoder.controller;
 
 import com.dmswide.nowcoder.service.AlphaService;
+import com.dmswide.nowcoder.util.CommunityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.PostConstruct;
+
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
 import java.util.*;
 
@@ -129,5 +133,57 @@ public class AlphaController {
         cindy.put("age","22");
         list.add(cindy);
         return list;
+    }
+
+    /**
+     * 服务端设置cookie 使用response来设置
+     * @param response
+     * @return
+     */
+    @GetMapping("/cookie/set")
+    @ResponseBody
+    public String setCookie(HttpServletResponse response){
+        //下面三个值都会以key=value的形式存在cookie中
+        Cookie cookie = new Cookie("code", CommunityUtil.generateUUID());
+        //设置cookie的生效范围 也就是设置了在下次哪些路径中才携带这个cookie
+        cookie.setPath("/community/alpha");
+        //设置生存的时间 也就是在磁盘上的生存时间
+        cookie.setMaxAge(2 * 60);
+        //发送cookie就是将cookie设置在response的header中
+        response.addCookie(cookie);
+
+        return "set cookie";
+    }
+
+    /**
+     * request带有cookie那么就可以从中获取cookie
+     * @param code
+     * @return
+     */
+    @GetMapping("/cookie/get")
+    @ResponseBody
+    public String getCookie(@CookieValue("code") String code){
+        return code;
+    }
+
+    /**
+     * JSESSIONID来指定cookie和session的对应关系
+     * @param session 不需要自己创建 直接声明即可 是一个域对象
+     * @return 返回字符串
+     */
+    @GetMapping("/session/set")
+    @ResponseBody
+    public String setSession(HttpSession session){
+        session.setAttribute("id",1);
+        session.setAttribute("name","session");
+        return "set session";
+    }
+
+    @GetMapping("/session/get")
+    @ResponseBody
+    public String getSession(HttpSession session, @CookieValue("JSESSIONID") String sessionId){
+        Integer id = (Integer) session.getAttribute("id");
+        String name = (String) session.getAttribute("name");
+        return id + " " + name + " " + sessionId;
     }
 }

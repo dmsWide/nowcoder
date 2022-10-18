@@ -6,6 +6,7 @@ server:
 
 #ThymeleafProperties
 #DataSourceProperties
+#MailProperties
 spring:
   thymeleaf:
     cache: false
@@ -19,6 +20,25 @@ spring:
       maximum-pool-size: 15
       minimum-idle: 5
       idle-timeout: 30000
+  mail:
+    host: smtp.163.com
+    port: 465
+    username: dmswide@163.com
+    password: BMPYQSHNBYLJNPVI
+    protocol: smtps
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+            required: true
+          #邮件接受时间限制 ms
+          timeout: 10000
+          #连接时间限制
+          connectiontimeout: 10000
+          #邮件发送时间限制
+          writetimeout: 10000
+
 
 # MybatisProperties
 mybatis:
@@ -29,3 +49,16 @@ mybatis:
   configuration:
     use-generated-keys: true
     map-underscore-to-camel-case: true
+
+#logger
+logging:
+  level:
+    #日志以debug级别监视该包
+   com.dmswide.nowcoder:
+    info
+
+#domain for mail sending
+nowcoder:
+  path:
+    domain: http://localhost:8080
+
