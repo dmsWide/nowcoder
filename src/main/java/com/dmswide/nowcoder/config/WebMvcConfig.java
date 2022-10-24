@@ -1,6 +1,7 @@
 package com.dmswide.nowcoder.config;
 
 import com.dmswide.nowcoder.controller.interceptor.AlphaInterceptor;
+import com.dmswide.nowcoder.controller.interceptor.LoginRequiredInterceptor;
 import com.dmswide.nowcoder.controller.interceptor.LoginTicketInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -19,13 +20,21 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Resource
     private LoginTicketInterceptor loginTicketInterceptor;
+
+    @Resource
+    private LoginRequiredInterceptor loginRequiredInterceptor;
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(alphaInterceptor)
                 .excludePathPatterns("/**/*.css","/**/*.js","/**/*.png","/**/*.jpg","/**/*.jpeg")
                 .addPathPatterns("/login","/register");
 
+        //加入了user
         registry.addInterceptor(loginTicketInterceptor)
+                .excludePathPatterns("/**/*.css","/**/*.js","/**/*.png","/**/*.jpg","/**/*.jpeg");
+
+        //使用user
+        registry.addInterceptor(loginRequiredInterceptor)
                 .excludePathPatterns("/**/*.css","/**/*.js","/**/*.png","/**/*.jpg","/**/*.jpeg");
     }
 }

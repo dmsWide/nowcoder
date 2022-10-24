@@ -1,5 +1,6 @@
 package com.dmswide.nowcoder.controller;
 
+import com.dmswide.nowcoder.annotation.LoginRequired;
 import com.dmswide.nowcoder.entity.User;
 import com.dmswide.nowcoder.service.impl.UserServiceImpl;
 import com.dmswide.nowcoder.util.CommunityUtil;
@@ -42,6 +43,7 @@ public class UserController {
     @Resource
     private HostHolder hostHolder;
 
+    @LoginRequired
     @GetMapping("/setting")
     public String getSettingPage(){
         return "/site/setting";
@@ -53,6 +55,7 @@ public class UserController {
      * @param model
      * @return 返回首页
      */
+    @LoginRequired
     @PostMapping("/upload")
     public String uploadHeader(MultipartFile headerImage, Model model){
         if(headerImage == null){
