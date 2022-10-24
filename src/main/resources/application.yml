@@ -54,11 +54,14 @@ mybatis:
 logging:
   level:
     #日志以debug级别监视该包
-   com.dmswide.nowcoder:
-    info
+    com.dmswide.nowcoder:
+      info
 
 #domain for mail sending
 nowcoder:
   path:
-    domain: http://localhost:8080
+    domain:
+      http://localhost:8080
+    upload:
+      D:/work/data/upload
 
