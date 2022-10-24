@@ -12,7 +12,7 @@ public class CommunityUtil {
         return UUID.randomUUID().toString().replaceAll("_","");
     }
     //md5加密
-    public static String mds(String key){
+    public static String md5(String key){
         if(StringUtils.isBlank(key)){
             return null;
         }

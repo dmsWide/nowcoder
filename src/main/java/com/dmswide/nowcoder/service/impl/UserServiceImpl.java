@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService, CommunityConstant {
         }
         //legal username|password|email
         user.setSalt(CommunityUtil.generateUUID().substring(0,5));
-        user.setPassword(CommunityUtil.mds(user.getPassword() + user.getSalt()));
+        user.setPassword(CommunityUtil.md5(user.getPassword() + user.getSalt()));
 
         user.setType(0);
         user.setStatus(0);

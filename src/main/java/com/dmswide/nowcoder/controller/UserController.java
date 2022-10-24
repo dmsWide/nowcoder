@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
@@ -118,6 +119,30 @@ public class UserController {
         } catch (IOException e) {
             logger.error("读取头像失败" + e.getMessage());
         }
+    }
 
+    /**
+     * 如果处理成功跳转到operate-result.html页面 否则还留在setting.html
+     * @param originalPassword 原始密码
+     * @param newPassword 新密码
+     * @param confirmPassword 确认密码
+     * @param model 域对象
+     * @return 根据处理结果返回特定网页
+     */
+    @PostMapping("/updatePassword")
+    public String updatePassword(String originalPassword, String newPassword, String confirmPassword, Model model){
+
+        Map<String, Object> map = userService.changePassword(hostHolder.getUser().getId(), originalPassword, newPassword, confirmPassword);
+        if(map.isEmpty()){
+            model.addAttribute("msg","成功修改密码");
+            //修改密码后 重定向到退出功能 强制用户退出重新登录
+            model.addAttribute("target","/logout");
+            return "/site/operate-result.html";
+        }else{
+            model.addAttribute("originalPasswordMsg",map.get("originalPasswordMsg"));
+            model.addAttribute("newPasswordMsg",map.get("newPasswordMsg"));
+            model.addAttribute("confirmPasswordMsg",map.get("confirmPasswordMsg"));
+            return "/site/setting";
+        }
     }
 }
