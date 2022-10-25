@@ -1,5 +1,6 @@
 package com.dmswide.nowcoder.entity;
 
+
 /**
  * 封装分页信息的组件
  */
@@ -34,6 +35,7 @@ public class Page {
     }
 
     public Integer getRows() {
+        System.out.println("*************------" + rows + "------*****************");
         return rows;
     }
 

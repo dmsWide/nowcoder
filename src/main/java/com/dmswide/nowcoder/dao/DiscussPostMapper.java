@@ -18,4 +18,6 @@ public interface DiscussPostMapper {
     // TODO: 2022/10/25 dmsWide 增加帖子
     /*没有使用@Param注解 那么sql语句直接写[对象的属性]即可*/
     int insertDiscussPost(DiscussPost discussPost);
+
+    DiscussPost selectDiscussPostById(@Param("id") int id);
 }
