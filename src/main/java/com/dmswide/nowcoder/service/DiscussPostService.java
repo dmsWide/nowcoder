@@ -15,4 +15,6 @@ public interface DiscussPostService {
 
     // TODO: 2022/10/14 dmsWide
     int findDiscussPostRows(Integer userId);
+    // TODO: 2022/10/25 dmsWide
+    int addDiscussPost(DiscussPost discussPost);
 }

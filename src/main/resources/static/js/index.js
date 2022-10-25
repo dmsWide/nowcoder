@@ -18,6 +18,7 @@ function publish() {
 
     // 发送异步请求(POST)
     $.post(
+        //global.js中定义了CONTEXT_PATH作为项目路径
         CONTEXT_PATH + "/discuss/add",
         {"title": title, "content": content},
         function (data) {

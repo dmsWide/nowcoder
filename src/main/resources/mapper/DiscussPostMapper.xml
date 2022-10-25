@@ -26,4 +26,9 @@
             </if>
         </trim>
     </select>
+
+    <insert id="insertDiscussPost" parameterType="com.dmswide.nowcoder.entity.DiscussPost">
+        insert into community.discuss_post(user_id, title, content, type, status, create_time, comment_count, score)
+        values(#{userId},#{title},#{content},#{type},#{status},#{createTime},#{commentCount},#{score});
+    </insert>
 </mapper>

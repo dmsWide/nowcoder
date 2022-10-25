@@ -3,7 +3,6 @@ package com.dmswide.nowcoder.controller;
 import com.dmswide.nowcoder.service.AlphaService;
 import com.dmswide.nowcoder.util.CommunityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -185,5 +184,18 @@ public class AlphaController {
         Integer id = (Integer) session.getAttribute("id");
         String name = (String) session.getAttribute("name");
         return id + " " + name + " " + sessionId;
+    }
+
+    /**
+     * ajax返回json数据 不是网页
+     * @param name
+     * @param age
+     * @return json字符串
+     */
+    @PostMapping("/ajax")
+    @ResponseBody
+    public String testAjax(String name,int age){
+        System.out.println(name + " " + age);
+        return CommunityUtil.getJSONString(0,"ok");
     }
 }

@@ -57,46 +57,56 @@ public class SensitiveWordsFilter {
         if(StringUtils.isBlank(text)){
             return null;
         }
+        //指针1
         TrieNode node = root;
+        //指针2、3
         int begin= 0,position = 0;
+        //执行结果
         StringBuilder stringBuilder = new StringBuilder();
 
         while(begin < text.length()){
-            char c = text.charAt(position);
-            //跳过符号
-            if(isSymbol(c)){
-                //若指针1处于根节点 将符号计入根节点 指针2向下走一步
-                if(node == root){
-                    stringBuilder.append(c);
-                    begin++;
+            if(position < text.length()){
+                char c = text.charAt(position);
+
+                //跳过符号
+                if(isSymbol(c)){
+                    //若指针1处于根节点 将符号计入根节点 指针2向下走一步
+                    if(node == root){
+                        stringBuilder.append(c);
+                        begin++;
+                    }
+                    //无论符号在开头还是中间 指针三都往下走
+                    position++;
+                    continue;
                 }
-                //无论符号在开头还是中间 指针三都往下走
-                position++;
-                continue;
-            }
-            //检查下级节点
-            node = node.getSubNode(c);
-            if(node == null){
-                //以begin开头的字符串不是敏感词
+
+                //检查下级节点
+                node = node.getSubNode(c);
+                if(node == null){
+                    //以begin开头的字符串不是敏感词
+                    stringBuilder.append(text.charAt(begin));
+                    begin++;
+                    position = begin;
+                    //重新指向根节点
+                    node = root;
+                }else if(node.isKeywordEnd()){
+                    //发现了敏感词 [begin,position]进行替换
+                    stringBuilder.append(REPLACEMENT);
+                    position++;
+                    begin = position;
+                    //重新指向根节点
+                    node = root;
+
+                }else{
+                    position++;
+                }
+
+            }else{
+                //position 遍历越界仍未发现敏感词
                 stringBuilder.append(text.charAt(begin));
                 begin++;
                 position = begin;
-                //重新指向根节点
                 node = root;
-            }else if(node.isKeywordEnd()){
-                //发现了敏感词 [begin,position]进行替换
-                stringBuilder.append(REPLACEMENT);
-                position++;
-                begin = position;
-                //重新指向根节点
-                node = root;
-            }else{
-                //继续检查下一个字符
-                if(position < text.length() - 1){
-                    position++;
-                }else {
-                    begin = position;
-                }
             }
         }
         return stringBuilder.toString();
