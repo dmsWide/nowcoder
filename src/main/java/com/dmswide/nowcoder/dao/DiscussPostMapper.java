@@ -20,4 +20,7 @@ public interface DiscussPostMapper {
     int insertDiscussPost(DiscussPost discussPost);
 
     DiscussPost selectDiscussPostById(@Param("id") int id);
+
+    // TODO: 2022/10/27 dmsWide 更新帖子的评论数量
+    int updateCommentCount(@Param("discussPostId") Integer discussPostId,@Param("commentCount")Integer commentCount);
 }

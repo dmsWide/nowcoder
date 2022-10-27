@@ -35,7 +35,7 @@ public class Page {
     }
 
     public Integer getRows() {
-        System.out.println("*************------" + rows + "------*****************");
+        //System.out.println("*************------" + rows + "------*****************");
         return rows;
     }
 

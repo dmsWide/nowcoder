@@ -1,7 +1,6 @@
 package com.dmswide.nowcoder.service;
 
 import com.dmswide.nowcoder.entity.DiscussPost;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -20,5 +19,7 @@ public interface DiscussPostService {
 
     // TODO: 2022/10/25 dmsWide
     DiscussPost findDiscussPostById(Integer id);
+
+    int updateCommentCount(Integer discussPostId,Integer commentCount);
 
 }

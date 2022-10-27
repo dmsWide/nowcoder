@@ -37,4 +37,11 @@
         from community.discuss_post
         where id = #{id}
     </select>
+
+    <!--方法的参数都是简单类型不需要声明 mybatis可以自己识别-->
+    <update id="updateCommentCount">
+        update community.discuss_post
+        set comment_count = #{commentCount}
+        where id = #{discussPostId}
+    </update>
 </mapper>
