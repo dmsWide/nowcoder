@@ -38,6 +38,11 @@ public class UserServiceImpl implements UserService, CommunityConstant {
         return userMapper.selectById(userId);
     }
 
+    @Override
+    public User findUserByName(String username) {
+        return userMapper.selectByName(username);
+    }
+
     public Map<String,Object> register(User user){
         Map<String,Object> map = new HashMap<>();
         if(user == null){

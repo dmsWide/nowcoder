@@ -22,7 +22,6 @@ public class MapperTest {
     //测试mapper的功能 首先注入mapper
     @Resource
     private UserMapper userMapper;
-
     //注入discussPostMapper
     @Resource
     private DiscussPostMapper discussPostMapper;
