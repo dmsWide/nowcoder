@@ -2,8 +2,10 @@ package com.dmswide.nowcoder.controller;
 
 import com.dmswide.nowcoder.annotation.LoginRequired;
 import com.dmswide.nowcoder.entity.User;
+import com.dmswide.nowcoder.service.FollowService;
 import com.dmswide.nowcoder.service.LikeService;
 import com.dmswide.nowcoder.service.impl.UserServiceImpl;
+import com.dmswide.nowcoder.util.CommunityConstant;
 import com.dmswide.nowcoder.util.CommunityUtil;
 import com.dmswide.nowcoder.util.HostHolder;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +30,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
-public class UserController {
+public class UserController implements CommunityConstant {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -45,6 +47,8 @@ public class UserController {
     private HostHolder hostHolder;
     @Resource
     private LikeService likeService;
+    @Resource
+    private FollowService followService;
     @LoginRequired
     @GetMapping("/setting")
     public String getSettingPage(){
@@ -168,6 +172,19 @@ public class UserController {
         //点赞数量
         int likeCount = likeService.findUserLikeCount(userId);
         model.addAttribute("likeCount",likeCount);
+
+        // TODO: 2022/11/1 dmsWide 查询关注数量
+        long followeeCount = followService.findFolloweeCount(userId, ENTITY_TYPE_USER);
+        model.addAttribute("followeeCount",followeeCount);
+        // TODO: 2022/11/1 dmsWide 粉丝的数量
+        long followerCount = followService.findFollowerCount(ENTITY_TYPE_USER, userId);
+        model.addAttribute("followerCount",followerCount);
+        // TODO: 2022/11/1 dmsWide 当前登录用户是否已关注某个用户
+        boolean hasFollowed = false;
+        if(hostHolder.getUser() != null){
+            hasFollowed = followService.hasFollowed(hostHolder.getUser().getId(),ENTITY_TYPE_USER,userId);
+        }
+        model.addAttribute("hasFollowed",hasFollowed);
 
         return "/site/profile";
     }

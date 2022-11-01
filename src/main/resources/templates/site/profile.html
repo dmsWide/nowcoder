@@ -88,8 +88,11 @@
                     <h5 class="mt-0 text-warning">
                         <span th:text="${user.username}">nowcoder</span>
                         <input type="hidden" id="entityId" th:value="${user.id}">
+                        <!--没登陆用户不能关注 而且自己不能关注自己-->
                         <button type="button"
-                                class="btn btn-info btn-sm float-right mr-5 follow-btn">关注TA
+                                th:class="|btn ${hasFollowed ? 'btn-secondary' : 'btn-info'} btn-sm float-right mr-5 follow-btn|"
+                                th:text="${hasFollowed?'已关注':'关注TA'}"
+                                th:if="${loginUser!=null && loginUser.id!=user.id}">关注TA
                         </button>
                     </h5>
                     <div class="text-muted mt-3">
