@@ -5,6 +5,7 @@ import com.dmswide.nowcoder.entity.DiscussPost;
 import com.dmswide.nowcoder.entity.Page;
 import com.dmswide.nowcoder.entity.User;
 import com.dmswide.nowcoder.service.CommentService;
+import com.dmswide.nowcoder.service.LikeService;
 import com.dmswide.nowcoder.service.impl.DiscussPostServiceImpl;
 import com.dmswide.nowcoder.service.impl.UserServiceImpl;
 import com.dmswide.nowcoder.util.CommunityConstant;
@@ -28,6 +29,8 @@ public class DiscussPostController implements CommunityConstant {
     private UserServiceImpl userService;
     @Resource
     private CommentService commentService;
+    @Resource
+    private LikeService likeService;
 
     @PostMapping("/add")
     @ResponseBody
@@ -63,6 +66,16 @@ public class DiscussPostController implements CommunityConstant {
         User user = userService.findUserById(discussPost.getUserId());
         model.addAttribute("user",user);
 
+        // TODO: 2022/10/31 dmsWide 帖子的点赞有关的信息
+        //点赞数量
+        long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, discussPostId);
+        model.addAttribute("likeCount",likeCount);
+
+        //点赞状态:先判断用户是否登录在去查询点赞状态
+        int likeStatus = hostHolder.getUser() == null ? 0 :
+            likeService.findEntityLikeStatus(hostHolder.getUser().getId(), ENTITY_TYPE_POST, discussPostId);
+        model.addAttribute("likeStatus",likeStatus);
+
         // TODO: 2022/10/25 dmsWide 帖子的回复功能还没有实现 评论的分页信息 设置实体类page
 
         //设置每页评论为五条 这五条是帖子的评论 不是回复的条数为五条
@@ -87,6 +100,16 @@ public class DiscussPostController implements CommunityConstant {
                 //评论的作者
                 commentVo.put("user",userService.findUserById(comment.getUserId()));
 
+                // TODO: 2022/10/31 dmsWide 评论的点赞有关的信息
+                //点赞数量
+                likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT, comment.getId());
+                commentVo.put("likeCount",likeCount);
+
+                //点赞状态:先判断用户是否登录在去查询点赞状态
+                likeStatus = hostHolder.getUser() == null ? 0 :
+                    likeService.findEntityLikeStatus(hostHolder.getUser().getId(), ENTITY_TYPE_COMMENT, comment.getId());
+                commentVo.put("likeStatus",likeStatus);
+
                 //查询回复列表
                 List<Comment> replyList = commentService.findCommentsByEntity(ENTITY_TYPE_COMMENT, comment.getId(), 0, Integer.MAX_VALUE);
                 //回复的VO列表
@@ -101,6 +124,16 @@ public class DiscussPostController implements CommunityConstant {
                         //回复的目标
                         User targetUser = reply.getTargetId() == 0 ? null : userService.findUserById(reply.getTargetId());
                         replyVo.put("target",targetUser);
+
+                        // TODO: 2022/11/1 dmsWide 回复的点赞相关的信息
+                        //点赞数量
+                        likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT, reply.getId());
+                        replyVo.put("likeCount",likeCount);
+
+                        //点赞状态:先判断用户是否登录在去查询点赞状态
+                        likeStatus = hostHolder.getUser() == null ? 0 :
+                            likeService.findEntityLikeStatus(hostHolder.getUser().getId(), ENTITY_TYPE_COMMENT, reply.getId());
+                        replyVo.put("likeStatus",likeStatus);
 
                         replyVoList.add(replyVo);
                     }

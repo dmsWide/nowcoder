@@ -7,6 +7,7 @@ server:
 #ThymeleafProperties
 #DataSourceProperties
 #MailProperties
+#RedisProperties
 spring:
   thymeleaf:
     cache: false
@@ -38,7 +39,11 @@ spring:
           connectiontimeout: 10000
           #邮件发送时间限制
           writetimeout: 10000
-
+  redis:
+    #选择的库的编号
+    database: 11
+    host: localhost
+    port: 6379
 
 # MybatisProperties
 mybatis:
@@ -64,4 +69,3 @@ nowcoder:
       http://localhost:8080
     upload:
       D:/work/data/upload
-
