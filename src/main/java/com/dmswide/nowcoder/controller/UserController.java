@@ -2,6 +2,7 @@ package com.dmswide.nowcoder.controller;
 
 import com.dmswide.nowcoder.annotation.LoginRequired;
 import com.dmswide.nowcoder.entity.User;
+import com.dmswide.nowcoder.service.LikeService;
 import com.dmswide.nowcoder.service.impl.UserServiceImpl;
 import com.dmswide.nowcoder.util.CommunityUtil;
 import com.dmswide.nowcoder.util.HostHolder;
@@ -42,7 +43,8 @@ public class UserController {
     private UserServiceImpl userService;
     @Resource
     private HostHolder hostHolder;
-
+    @Resource
+    private LikeService likeService;
     @LoginRequired
     @GetMapping("/setting")
     public String getSettingPage(){
@@ -147,5 +149,26 @@ public class UserController {
             model.addAttribute("confirmPasswordMsg",map.get("confirmPasswordMsg"));
             return "/site/setting";
         }
+    }
+
+    /**
+     * 查看个人主页 不只是自己的主页 通过点击头像可以查看任何人的主页
+     * @param userId 根据用户id来查询 拼成url
+     * @param model 给网页返回数据
+     * @return 返回页面
+     */
+    @GetMapping("/profile/{userId}")
+    public String getProfilePage(@PathVariable("userId") Integer userId,Model model){
+        User user = userService.findUserById(userId);
+        if(user == null){
+            throw new RuntimeException("该用户不存在");
+        }
+        //添加用户
+        model.addAttribute("user",user);
+        //点赞数量
+        int likeCount = likeService.findUserLikeCount(userId);
+        model.addAttribute("likeCount",likeCount);
+
+        return "/site/profile";
     }
 }

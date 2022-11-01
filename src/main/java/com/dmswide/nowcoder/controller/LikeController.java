@@ -20,11 +20,11 @@ public class LikeController {
 
     @PostMapping("/like")
     @ResponseBody
-    public String like(Integer entityType,Integer entityId){
+    public String like(Integer entityType,Integer entityId,Integer entityUserId){
         //这里没有校验用户是否登录 没有登录的话点赞 会有问题
         User user = hostHolder.getUser();
         //点赞
-        likeService.like(user.getId(),entityType,entityId);
+        likeService.like(user.getId(),entityType,entityId,entityUserId);
 
         //点赞数量
         long likeCount = likeService.findEntityLikeCount(entityType, entityId);
