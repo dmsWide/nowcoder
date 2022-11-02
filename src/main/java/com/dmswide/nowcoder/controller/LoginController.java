@@ -21,13 +21,14 @@ import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 public class LoginController implements CommunityConstant {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
     @Resource
     private UserServiceImpl userService;
-
     @Resource
     private Producer kaptchaProducer;
     @GetMapping("/register")
@@ -80,11 +81,23 @@ public class LoginController implements CommunityConstant {
     }
 
     @GetMapping("/kaptcha")
-    public void getKaptcha(HttpSession session, HttpServletResponse response){
+    public void getKaptcha(/*HttpSession session,*/ HttpServletResponse response){
         String text = kaptchaProducer.createText();
         BufferedImage image = kaptchaProducer.createImage(text);
         //验证码文本内容存入session
-        session.setAttribute("kaptcha",text);
+        /*session.setAttribute("kaptcha",text);*/
+
+        // TODO: 2022/11/2 dmsWide 使用redis来代替session存储验证码
+        //验证码归属
+        String kaptchaOwner = CommunityUtil.generateUUID();
+        Cookie cookie = new Cookie("kaptchaOwner", kaptchaOwner);
+        cookie.setMaxAge(60);
+        cookie.setPath(contextPath);
+        response.addCookie(cookie);
+
+        //验证码存入redis
+        String redisKey = RedisKeyUtil.getKaptchaKey(kaptchaOwner);
+        redisTemplate.opsForValue().set(redisKey,text,60, TimeUnit.SECONDS);
 
         //验证码图片输出到浏览器
         response.setContentType("image/png");

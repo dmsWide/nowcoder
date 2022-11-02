@@ -6,8 +6,10 @@ import com.dmswide.nowcoder.service.UserService;
 import com.dmswide.nowcoder.util.CommunityConstant;
 import com.dmswide.nowcoder.util.CommunityUtil;
 import com.dmswide.nowcoder.util.MailClient;
+import com.dmswide.nowcoder.util.RedisKeyUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -17,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl implements UserService, CommunityConstant {
@@ -26,8 +29,10 @@ public class UserServiceImpl implements UserService, CommunityConstant {
     private MailClient mailClient;
     @Resource
     private TemplateEngine templateEngine;
+    /*@Resource
+    private LoginTicketMapper loginTicketMapper;*/
     @Resource
-    private LoginTicketMapper loginTicketMapper;
+    private RedisTemplate<String,Object> redisTemplate;
     @Value("${nowcoder.path.domain}")
     private String domain;
     @Value("${server.servlet.context-path}")
@@ -35,7 +40,12 @@ public class UserServiceImpl implements UserService, CommunityConstant {
 
     @Override
     public User findUserById(Integer userId) {
-        return userMapper.selectById(userId);
+        //return userMapper.selectById(userId);
+        User user = getUserFromCache(userId);
+        if(user == null){
+            user = initCache(userId);
+        }
+        return user;
     }
 
     @Override
@@ -113,6 +123,7 @@ public class UserServiceImpl implements UserService, CommunityConstant {
             return ACTIVATION_REPEAT;
         }else if(user.getActivationCode().equals(code)){
             userMapper.updateStatus(userId,1);
+            clearCache(userId);
             return ACTIVATION_SUCCESS;
         }else{
             return ACTIVATION_FAILURE;
