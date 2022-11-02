@@ -6,13 +6,13 @@
     <link rel="icon" href="https://static.nowcoder.com/images/logo_87_87.png"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           crossorigin="anonymous">
-    <link rel="stylesheet" href="../css/global.css" th:href="@{/css/global.css}"/>
+    <link rel="stylesheet" th:href="@{/css/global.css}"/>
     <title>牛客网-关注</title>
 </head>
 <body>
 <div class="nk-container">
     <!-- 头部 -->
-    <header class="bg-dark sticky-top" th:replace="index :: header">
+    <header class="bg-dark sticky-top" th:replace="index::header">
         <div class="container">
             <!-- 导航 -->
             <nav class="navbar navbar-expand-lg navbar-dark">
@@ -80,15 +80,15 @@
                         </a>
                     </li>
                 </ul>
-                <a href="profile.html" th:href="@{|/user/profile/${user.id}|}"
+                <a th:href="@{|/user/profile/${user.id}|}"
                    class="text-muted position-absolute rt-0">返回个人主页&gt;</a>
             </div>
 
             <!-- 粉丝列表 -->
             <ul class="list-unstyled">
                 <li class="media pb-3 pt-3 mb-3 border-bottom position-relative" th:each="map:${users}">
-                    <a href="profile.html" th:href="@{|/user/profile/${map.user.id}|}">
-                        <img src="http://images.nowcoder.com/head/8t.png" th:src="${map.user.headerUrl}"
+                    <a th:href="@{|/user/profile/${map.user.id}|}">
+                        <img th:src="${map.user.headerUrl}"
                              class="mr-4 rounded-circle user-header" alt="用户头像">
                     </a>
                     <div class="media-body">
@@ -108,8 +108,6 @@
                         </div>
                     </div>
                 </li>
-                <!--/*-->
-                <!--*/-->
             </ul>
             <!-- 分页 -->
             <nav class="mt-5" th:replace="index::pagination">
@@ -136,7 +134,7 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
 <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
-<script src="../js/global.js" th:src="@{/js/global.js}"></script>
-<script src="../js/profile.js" th:src="@{/js/profile.js}"></script>
+<script th:src="@{/js/global.js}"></script>
+<script th:src="@{/js/profile.js}"></script>
 </body>
 </html>
