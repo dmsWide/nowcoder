@@ -6,8 +6,8 @@
     <link rel="icon" href="https://static.nowcoder.com/images/logo_87_87.png"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           crossorigin="anonymous">
-    <link rel="stylesheet" href="../css/global.css" th:href="@{/css/global.css}"/>
-    <link rel="stylesheet" href="../css/letter.css" th:href="@{/css/letter.css}"/>
+    <link rel="stylesheet" th:href="@{/css/global.css}"/>
+    <link rel="stylesheet" th:href="@{/css/letter.css}"/>
     <title>牛客网-通知详情</title>
 </head>
 <body>
@@ -79,7 +79,7 @@
             <!-- 通知列表 -->
             <ul class="list-unstyled mt-4">
                 <li class="media pb-3 pt-3 mb-2" th:each="map:${notices}">
-                    <img src="http://static.nowcoder.com/images/head/notify.png" th:src="${map.fromUser.headerUrl}"
+                    <img th:src="${map.fromUser.headerUrl}"
                          class="mr-4 rounded-circle user-header" alt="系统图标">
                     <div class="toast show d-lg-block" role="alert" aria-live="assertive" aria-atomic="true">
                         <div class="toast-header">
@@ -94,34 +94,35 @@
                             </button>
                         </div>
                         <div class="toast-body">
-								<span th:if="${topic.equals('comment')}">用户
-									<i th:utext="${map.user.username}">nowcoder</i>
-									评论了你的
-									<b th:text="${map.entityType==1?'帖子':'回复'}">帖子</b>,
-									<a class="text-primary" href="#" th:href="@{|/discuss/detail/${map.postId}|}">
-										点击查看
-									</a> !
-								</span>
+                            <!--评论 注意使用的是判断th:if 而非 th:text-->
+                            <span th:if="${topic.equals('comment')}">用户
+                                <i th:utext="${map.user.username}">nowcoder</i>
+                                评论了你的
+                                <b th:text="${map.entityType==1?'帖子':'回复'}">帖子</b>,
+                                <a class="text-primary" th:href="@{|/discuss/detail/${map.postId}|}">
+                                    点击查看
+                                </a> !
+                            </span>
+                            <!--点赞-->
                             <span th:if="${topic.equals('like')}">用户
-									<i th:utext="${map.user.username}">nowcoder</i>
-									点赞了你的
-									<b th:text="${map.entityType==1?'帖子':'回复'}">帖子</b>,
-									<a class="text-primary" href="#" th:href="@{|/discuss/detail/${map.postId}|}">
-										点击查看
-									</a> !
-								</span>
+                                <i th:utext="${map.user.username}">nowcoder</i>
+                                点赞了你的
+                                <b th:text="${map.entityType==1?'帖子':'回复'}">帖子</b>,
+                                <a class="text-primary" th:href="@{|/discuss/detail/${map.postId}|}">
+                                    点击查看
+                                </a> !
+                            </span>
+                            <!--关注-->
                             <span th:if="${topic.equals('follow')}">用户
-									<i th:utext="${map.user.username}">nowcoder</i>
-									关注了你，
-									<a class="text-primary" href="#" th:href="@{|/user/profile/${map.user.id}|}">
-										点击查看
-									</a> !
-								</span>
+                                <i th:utext="${map.user.username}">nowcoder</i>
+                                关注了你，
+                                <a class="text-primary" th:href="@{|/user/profile/${map.user.id}|}">
+                                    点击查看
+                                </a> !
+							</span>
                         </div>
                     </div>
                 </li>
-                <!--/*-->
-                <!--*/-->
             </ul>
             <!-- 分页 -->
             <nav class="mt-5" th:replace="index::pagination">
@@ -148,8 +149,8 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
 <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
-<script src="../js/global.js" th:src="@{/js/global.js}"></script>
-<script src="../js/letter.js" th:src="@{/js/letter.js}"></script>
+<script th:src="@{/js/global.js}"></script>
+<script th:src="@{/js/letter.js}"></script>
 <script>
     function back() {
         location.href = CONTEXT_PATH + "/notice/list";

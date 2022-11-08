@@ -13,4 +13,8 @@ public interface CommentService {
 
     // TODO: 2022/10/27 dmsWide 增加评论
     int addComment(Comment comment);
+
+    // TODO: 2022/11/3 dmsWide 根据id查询Comment
+    Comment findCommentById(Integer id);
+
 }

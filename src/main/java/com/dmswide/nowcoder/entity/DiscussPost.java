@@ -1,16 +1,42 @@
 package com.dmswide.nowcoder.entity;
 
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import java.util.Date;
 
+/**和es差生关联*/
+@Document(indexName = "discusspost",type = "_doc",shards = 6,replicas = 3)
 public class DiscussPost {
+    @Id
     private Integer id = 0;
+
+    @Field(type = FieldType.Integer)
     private Integer userId = 0;
+
+    /*两个分词器不同*/
+    @Field(type = FieldType.Text,analyzer = "ik_max_word",searchAnalyzer = "ik_smart")
     private String title;
+
+    @Field(type = FieldType.Text,analyzer = "ik_max_word",searchAnalyzer = "ik_smart")
     private String content;
+
+    @Field(type = FieldType.Integer)
     private Integer type = 0;
+
+    @Field(type = FieldType.Integer)
     private Integer status = 0;
+
+    @Field(type = FieldType.Date)
     private Date createTime;
+
+    @Field(type = FieldType.Integer)
     private Integer commentCount = 0;
+
+    @Field(type = FieldType.Double)
     private Double score = 0.0d;
 
     public Integer getId() {

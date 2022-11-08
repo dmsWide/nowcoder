@@ -1,9 +1,7 @@
 package com.dmswide.nowcoder.controller;
 
-import com.dmswide.nowcoder.entity.Comment;
-import com.dmswide.nowcoder.entity.DiscussPost;
-import com.dmswide.nowcoder.entity.Page;
-import com.dmswide.nowcoder.entity.User;
+import com.dmswide.nowcoder.entity.*;
+import com.dmswide.nowcoder.event.EventProducer;
 import com.dmswide.nowcoder.service.CommentService;
 import com.dmswide.nowcoder.service.LikeService;
 import com.dmswide.nowcoder.service.impl.DiscussPostServiceImpl;
@@ -31,6 +29,8 @@ public class DiscussPostController implements CommunityConstant {
     private CommentService commentService;
     @Resource
     private LikeService likeService;
+    @Resource
+    private EventProducer eventProducer;
 
     @PostMapping("/add")
     @ResponseBody
@@ -46,7 +46,16 @@ public class DiscussPostController implements CommunityConstant {
         discussPost.setCreateTime(new Date());
 
         discussPostService.addDiscussPost(discussPost);
-        //报错的情况 后续处理
+
+        // TODO: 2022/11/8 dmsWide 添加帖子时 需要触发发帖事件 消费者消费发帖事件 将贴子保存在es服务器中
+        Event event = new Event()
+            .setTopic(TOPIC_PUBLISH)
+            .setUserId(user.getId())
+            .setEntityType(ENTITY_TYPE_POST)
+            .setEntityId(discussPost.getId());//这里在KeyProperty="id"设置后生效
+        eventProducer.fireEvent(event);
+
+        //报错的情况 后续统一处理
         return CommunityUtil.getJSONString(0,"发帖成功");
     }
 

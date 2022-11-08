@@ -1,7 +1,10 @@
 package com.dmswide.nowcoder.controller;
 
+import com.dmswide.nowcoder.entity.Event;
 import com.dmswide.nowcoder.entity.User;
+import com.dmswide.nowcoder.event.EventProducer;
 import com.dmswide.nowcoder.service.LikeService;
+import com.dmswide.nowcoder.util.CommunityConstant;
 import com.dmswide.nowcoder.util.CommunityUtil;
 import com.dmswide.nowcoder.util.HostHolder;
 import org.springframework.stereotype.Controller;
@@ -12,15 +15,16 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 
 @Controller
-public class LikeController {
+public class LikeController implements CommunityConstant {
     @Resource
     private LikeService likeService;
     @Resource
     private HostHolder hostHolder;
-
+    @Resource
+    private EventProducer eventProducer;
     @PostMapping("/like")
     @ResponseBody
-    public String like(Integer entityType,Integer entityId,Integer entityUserId){
+    public String like(Integer entityType,Integer entityId,Integer entityUserId,Integer postId){
         //这里没有校验用户是否登录 没有登录的话点赞 会有问题
         User user = hostHolder.getUser();
         //点赞
@@ -35,6 +39,19 @@ public class LikeController {
         HashMap<String, Object> map = new HashMap<>();
         map.put("likeCount",likeCount);
         map.put("likeStatus",likeStatus);
+
+        // TODO: 2022/11/3 dmsWide 触发点赞事件:点赞的时候通知 取消点赞时不需要通知
+        if(likeStatus == 1){
+            Event event = new Event()
+                .setTopic(TOPIC_LIKE)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(entityType)
+                .setEntityId(entityId)
+                .setEntityUserId(entityUserId)
+                .setData("postId",postId);
+            eventProducer.fireEvent(event);
+        }
+
         return CommunityUtil.getJSONString(0,null,map);
     }
 }

@@ -1,7 +1,9 @@
 package com.dmswide.nowcoder.controller;
 
+import com.dmswide.nowcoder.entity.Event;
 import com.dmswide.nowcoder.entity.Page;
 import com.dmswide.nowcoder.entity.User;
+import com.dmswide.nowcoder.event.EventProducer;
 import com.dmswide.nowcoder.service.FollowService;
 import com.dmswide.nowcoder.service.UserService;
 import com.dmswide.nowcoder.util.CommunityConstant;
@@ -26,6 +28,9 @@ public class FollowController implements CommunityConstant {
     private HostHolder hostHolder;
     @Resource
     private UserService userService;
+    @Resource
+    private EventProducer eventProducer;
+
     @PostMapping("/follow")
     @ResponseBody
     public String follow(Integer entityType,Integer entityId){
@@ -34,6 +39,17 @@ public class FollowController implements CommunityConstant {
             throw new RuntimeException("未登录");
         }
         followService.follow(user.getId(),entityType,entityId);
+
+        // TODO: 2022/11/3 dmsWide 触发关注事件
+        Event event = new Event()
+            .setTopic(TOPIC_FOLLOW)
+            .setUserId(hostHolder.getUser().getId())
+            .setEntityType(entityType)
+            .setEntityId(entityId)
+            .setEntityUserId(entityId);
+
+        eventProducer.fireEvent(event);
+
         return CommunityUtil.getJSONString(0,"已关注!");
     }
 

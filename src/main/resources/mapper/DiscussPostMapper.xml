@@ -27,6 +27,8 @@
         </trim>
     </select>
 
+    <!--keyProperty="id"生效：将post实体类插入MySQL数据库后，要获取post实体类的id信息，设置发帖事件的entityId。
+    keyProperty="id"生效后，MyBatis会将插入到MySQL数据库中生成的id返回至DiscussPost实体-->
     <insert id="insertDiscussPost" parameterType="com.dmswide.nowcoder.entity.DiscussPost" keyProperty="id">
         insert into community.discuss_post(user_id, title, content, type, status, create_time, comment_count, score)
         values(#{userId},#{title},#{content},#{type},#{status},#{createTime},#{commentCount},#{score});

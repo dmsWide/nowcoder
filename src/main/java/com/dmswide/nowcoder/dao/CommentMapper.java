@@ -20,4 +20,6 @@ public interface CommentMapper {
 
     // TODO: 2022/10/27 dmsWide 添加评论
     int insertComment(Comment comment);
+
+    Comment selectCommentById(@Param("id") Integer id);
 }

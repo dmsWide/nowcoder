@@ -40,6 +40,19 @@ public interface MessageMapper {
     int insertMessage(Message message);
     //修改消息的状态 已读或者删除
 
-    //这里使用了注解@Param给参数起了别名 mapper.xml文件中使用参数ids循环变量 也可以使用list作为循环变量
+    //这里使用了注解@Param给参数起了别名 mapper.xml文件中使用参数ids循环变量 不可以使用list作为循环变量 报错了 切记
     int updateStatus(@Param("ids") List<Integer> ids,@Param("status") Integer status);
+
+    // TODO: 2022/11/3 dmsWide 查询某个主题下最新的通知
+    Message selectLatestNotice(@Param("userId") Integer userId,@Param("topic") String topic);
+
+    // TODO: 2022/11/3 dmsWide 查询某个主题下包含的通知的数量
+    int selectNoticeCount(@Param("userId") Integer userId,@Param("topic") String topic);
+
+    // TODO: 2022/11/3 dmsWide 查询未读的通知的数量
+    int selectNoticeUnreadCount(@Param("userId") Integer userId,@Param("topic") String topic);
+
+    // TODO: 2022/11/3 dmsWide 查询某个主题所包含的通知列表
+    List<Message> selectNotice(@Param("userId") Integer userId,@Param("topic") String topic,
+                               @Param("offset") Integer offset,@Param("limit") Integer limit);
 }
