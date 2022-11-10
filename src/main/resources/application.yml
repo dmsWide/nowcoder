@@ -47,7 +47,7 @@ spring:
     host: localhost
     port: 6379
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: 127.0.0.1:9092
     consumer:
       group-id: test-consumer-group
       enable-auto-commit: true

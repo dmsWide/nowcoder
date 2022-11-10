@@ -113,6 +113,9 @@ public class LoginController implements CommunityConstant {
     @GetMapping("/logout")
     public String logout(@CookieValue("ticket") String ticket){
         userService.logout(ticket);
+
+        // TODO: 2022/11/10 dmsWide 退出的时候清理数据
+        SecurityContextHolder.clearContext();
         return "redirect:/login";
     }
 }

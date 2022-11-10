@@ -20,8 +20,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private AlphaInterceptor alphaInterceptor;
     @Resource
     private LoginTicketInterceptor loginTicketInterceptor;
-    @Resource
-    private LoginRequiredInterceptor loginRequiredInterceptor;
+
+    // TODO: 2022/11/9 dmsWide 使用spring security来进行拦截 不再使用拦截器 废弃这个拦截器
+    /*@Resource
+    private LoginRequiredInterceptor loginRequiredInterceptor;*/
     @Resource
     private MessageInterceptor messageInterceptor;
 
@@ -36,8 +38,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/**/*.css","/**/*.js","/**/*.png","/**/*.jpg","/**/*.jpeg");
 
         //使用user
-        registry.addInterceptor(loginRequiredInterceptor)
-                .excludePathPatterns("/**/*.css","/**/*.js","/**/*.png","/**/*.jpg","/**/*.jpeg");
+        //registry.addInterceptor(loginRequiredInterceptor)
+        //.excludePathPatterns("/**/*.css","/**/*.js","/**/*.png","/**/*.jpg","/**/*.jpeg");
 
         //动态请求都拦截 静态请求全部放行
         registry.addInterceptor(messageInterceptor)

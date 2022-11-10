@@ -87,7 +87,7 @@ public class FollowController implements CommunityConstant {
         return "/site/followee";
     }
 
-       @GetMapping("/followers/{userId}")
+    @GetMapping("/followers/{userId}")
     public String getFollower(@PathVariable("userId")Integer userId, Page page, Model model){
         User user = userService.findUserById(userId);
         if(user == null){
