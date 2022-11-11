@@ -37,7 +37,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                 "/like",
                 "/follow",
                 "/unfollow"
-            ).hasAnyAuthority(AUTHORITY_USER,AUTHORITY_ADMIN,AUTHORITY_MODERATOR)
+            )
+            .hasAnyAuthority(
+                AUTHORITY_USER,
+                AUTHORITY_ADMIN,
+                AUTHORITY_MODERATOR
+            )
+            .antMatchers(
+                //分别将置顶和加精的路径放进来
+                "/discuss/top",
+                "/discuss/wonderful"
+            )
+            .hasAnyAuthority(
+                //置顶和加精版主可以访问
+                AUTHORITY_MODERATOR
+            )
+            .antMatchers(
+                "/discuss/delete"
+            )
+            .hasAnyAuthority(
+                //管理员才能删除
+                AUTHORITY_ADMIN
+            )
             .anyRequest().permitAll()
             .and().csrf().disable();
 
@@ -52,7 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                     if("XMLHttpRequest".equals(xRequestedWith)){
                         httpServletResponse.setContentType("application/plain;charset=utf-8");
                         //返回json字符串
-                        httpServletResponse.getWriter().write(CommunityUtil.getJSONString(403,"你还未登录"));
+                        httpServletResponse.getWriter().write(CommunityUtil.getJSONString(403,"你还未登录,不能进行此项操作，快去登陆解锁更多功能"));
                     }else {
                         //返回html页面
                         httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/login");

@@ -61,6 +61,8 @@ public class FollowController implements CommunityConstant {
             throw new RuntimeException("未登录");
         }
         followService.unFollow(user.getId(),entityType,entityId);
+
+        //取消关注不发送消息 不触发任何事件
         return CommunityUtil.getJSONString(0,"已取关");
     }
 

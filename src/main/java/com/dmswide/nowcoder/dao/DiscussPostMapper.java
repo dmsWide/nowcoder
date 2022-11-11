@@ -23,4 +23,10 @@ public interface DiscussPostMapper {
 
     // TODO: 2022/10/27 dmsWide 更新帖子的评论数量
     int updateCommentCount(@Param("discussPostId") Integer discussPostId,@Param("commentCount")Integer commentCount);
+
+    // TODO: 2022/11/10 dmsWide 修改帖子类型
+    Integer updateType(@Param("id") Integer id,@Param("type") Integer type);
+
+    // TODO: 2022/11/10 dmsWide 修改帖子的状态
+    Integer updateStatus(@Param("id") Integer id,@Param("status") Integer status);
 }

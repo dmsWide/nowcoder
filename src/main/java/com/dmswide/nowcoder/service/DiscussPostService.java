@@ -22,4 +22,8 @@ public interface DiscussPostService {
 
     int updateCommentCount(Integer discussPostId,Integer commentCount);
 
+    // TODO: 2022/11/11 dmsWide 更新帖子类型
+    int updateType(Integer id,Integer type);
+    // TODO: 2022/11/11 dmsWide 更新帖子状态
+    int updateStatus(Integer id,Integer status);
 }

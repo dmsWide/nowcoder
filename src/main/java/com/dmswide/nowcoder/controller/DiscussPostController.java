@@ -162,4 +162,74 @@ public class DiscussPostController implements CommunityConstant {
         return "site/discuss-detail";
     }
 
+    // TODO: 2022/11/11 dmsWide 处理置顶帖子请求,修改帖子状态
+    /**
+     * 类型设置为1
+     * @param id 帖子id
+     * @return
+     */
+    @PostMapping("/top")
+    @ResponseBody
+    public String setTop(Integer id){
+        //设置状态为1,置顶状态
+        discussPostService.updateType(id,1);
+        //帖子被修改触发发帖事件 同步到ElasticSearch中
+        Event event = new Event()
+            .setTopic(TOPIC_PUBLISH)
+            .setUserId(hostHolder.getUser().getId())
+            .setEntityType(ENTITY_TYPE_POST)
+            .setEntityId(id);
+        eventProducer.fireEvent(event);
+
+        //表示成功的状态
+        return CommunityUtil.getJSONString(0);
+    }
+
+    // TODO: 2022/11/11 dmsWide 处理加精帖子请求
+
+    /**
+     *  状态设置为1
+     * @param id 帖子id
+     * @return
+     */
+    @PostMapping("/wonderful")
+    @ResponseBody
+    public String setWonderful(Integer id){
+        //设置状态为1,置顶状态
+        discussPostService.updateStatus(id,1);
+        //帖子被修改触发发帖事件 同步到ElasticSearch中
+        Event event = new Event()
+            .setTopic(TOPIC_PUBLISH)
+            .setUserId(hostHolder.getUser().getId())
+            .setEntityType(ENTITY_TYPE_POST)
+            .setEntityId(id);
+        eventProducer.fireEvent(event);
+
+        //表示成功的状态
+        return CommunityUtil.getJSONString(0);
+    }
+
+    // TODO: 2022/11/11 dmsWide 处理删除帖子请求
+
+    /**
+     * 删除帖子并非真的从数据库中进行删除 只是状态修改成2
+     * @param id 帖子id
+     * @return
+     */
+    @PostMapping("/delete")
+    @ResponseBody
+    public String setDelete(Integer id){
+        //设置状态为1,置顶状态
+        discussPostService.updateStatus(id,2);
+        //帖子被删除触发删帖事件 ElasticSearch中删除这个帖子
+        Event event = new Event()
+            .setTopic(TOPIC_DELETE)
+            .setUserId(hostHolder.getUser().getId())
+            .setEntityType(ENTITY_TYPE_POST)
+            .setEntityId(id);
+        eventProducer.fireEvent(event);
+
+        //表示成功的状态
+        return CommunityUtil.getJSONString(0);
+    }
 }

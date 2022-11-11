@@ -1,8 +1,8 @@
-/*$(function () {
+$(function () {
     $("#topBtn").click(setTop);
     $("#wonderfulBtn").click(setWonderful);
     $("#deleteBtn").click(setDelete);
-});*/
+});
 
 function like(btn, entityType, entityId,entityUserId,postId) {
     $.post(
@@ -21,12 +21,13 @@ function like(btn, entityType, entityId,entityUserId,postId) {
 }
 
 // 置顶
-/*function setTop() {
+function setTop() {
     $.post(
         CONTEXT_PATH + "/discuss/top",
         {"id": $("#postId").val()},
         function (data) {
             data = $.parseJSON(data);
+            /*置顶成功*/
             if (data.code == 0) {
                 $("#topBtn").attr("disabled", "disabled");
             } else {
@@ -34,11 +35,10 @@ function like(btn, entityType, entityId,entityUserId,postId) {
             }
         }
     );
-}*/
+}
 
 
 // 加精
-/*
 function setWonderful() {
     $.post(
         CONTEXT_PATH + "/discuss/wonderful",
@@ -53,10 +53,8 @@ function setWonderful() {
         }
     );
 }
-*/
 
 // 删除
-/*
 function setDelete() {
     $.post(
         CONTEXT_PATH + "/discuss/delete",
@@ -64,10 +62,11 @@ function setDelete() {
         function (data) {
             data = $.parseJSON(data);
             if (data.code == 0) {
-                location.href = CONTEXT_PATH + "/";
+                //删除后直接跳转到首页
+                location.href = CONTEXT_PATH + "/index";
             } else {
                 alert(data.msg);
             }
         }
     );
-}*/
+}
