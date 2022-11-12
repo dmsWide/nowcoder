@@ -10,6 +10,10 @@ public class RedisKeyUtil {
     private static final String PREFIX_TICKET = "ticket";
     private static final String PREFIX_USER = "user";
 
+    // TODO: 2022/11/11 dmsWide 统计uv和dau
+    private static final String PREFIX_UV = "uv";
+    private static final String PREFIX_DAU = "dau";
+
     //某个实体的赞:帖子或者回复
     //like:entity:entityType:entityId -> set(userId)
     public static String getEntityLikeKey(Integer entityType,Integer entityId){
@@ -52,5 +56,25 @@ public class RedisKeyUtil {
     //user
     public static String getUserKey(Integer userId){
         return PREFIX_USER + SPLIT + userId;
+    }
+
+    // TODO: 2022/11/11 dmsWide 单日UV
+    public static String getUVKey(String date){
+        return PREFIX_UV + SPLIT + date;
+    }
+
+    // TODO: 2022/11/11 dmsWide 区间UV
+    public static String getUVKey(String startDate,String endDate){
+        return PREFIX_UV + SPLIT + startDate + SPLIT + endDate;
+    }
+
+    // TODO: 2022/11/11 dmsWide 单日DAU
+    public static String getDAUKey(String date){
+        return PREFIX_DAU + SPLIT + date;
+    }
+
+    // TODO: 2022/11/11 dmsWide 区间DAU
+    public static String getDAUKey(String startDate,String endDate){
+        return PREFIX_DAU + SPLIT + startDate + SPLIT + endDate;
     }
 }

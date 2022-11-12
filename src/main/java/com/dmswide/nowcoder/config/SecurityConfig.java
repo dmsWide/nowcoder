@@ -53,7 +53,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                 AUTHORITY_MODERATOR
             )
             .antMatchers(
-                "/discuss/delete"
+                "/discuss/delete",
+                // TODO: 2022/11/12 dmsWide 统计信息需要有管理员权限才能进行
+                "/data/**"
             )
             .hasAnyAuthority(
                 //管理员才能删除

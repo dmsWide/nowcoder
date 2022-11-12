@@ -1,9 +1,6 @@
 package com.dmswide.nowcoder.config;
 
-import com.dmswide.nowcoder.controller.interceptor.AlphaInterceptor;
-import com.dmswide.nowcoder.controller.interceptor.LoginRequiredInterceptor;
-import com.dmswide.nowcoder.controller.interceptor.LoginTicketInterceptor;
-import com.dmswide.nowcoder.controller.interceptor.MessageInterceptor;
+import com.dmswide.nowcoder.controller.interceptor.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -26,6 +23,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private LoginRequiredInterceptor loginRequiredInterceptor;*/
     @Resource
     private MessageInterceptor messageInterceptor;
+    @Resource
+    private StatisticInterceptor statisticInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -43,6 +42,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         //动态请求都拦截 静态请求全部放行
         registry.addInterceptor(messageInterceptor)
+                .excludePathPatterns("/**/*.css","/**/*.js","/**/*.png","/**/*.jpg","/**/*.jpeg");
+
+        // TODO: 2022/11/12 dmsWide 同样是不需要拦截静态资源只拦截对动态资源的访问
+        registry.addInterceptor(statisticInterceptor)
                 .excludePathPatterns("/**/*.css","/**/*.js","/**/*.png","/**/*.jpg","/**/*.jpeg");
     }
 }
