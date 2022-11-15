@@ -7,6 +7,8 @@ import com.dmswide.nowcoder.service.LikeService;
 import com.dmswide.nowcoder.util.CommunityConstant;
 import com.dmswide.nowcoder.util.CommunityUtil;
 import com.dmswide.nowcoder.util.HostHolder;
+import com.dmswide.nowcoder.util.RedisKeyUtil;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,6 +24,9 @@ public class LikeController implements CommunityConstant {
     private HostHolder hostHolder;
     @Resource
     private EventProducer eventProducer;
+    @Resource
+    private RedisTemplate<String,Object> redisTemplate;
+
     @PostMapping("/like")
     @ResponseBody
     public String like(Integer entityType,Integer entityId,Integer entityUserId,Integer postId){
@@ -50,8 +55,14 @@ public class LikeController implements CommunityConstant {
                 .setEntityUserId(entityUserId)
                 .setData("postId",postId);
             eventProducer.fireEvent(event);
+
         }
 
+        // TODO: 2022/11/15 dmsWide 给帖子点赞时需要计算分数
+        if(entityType == ENTITY_TYPE_POST){
+            String redisKey = RedisKeyUtil.getPostScoreKey();
+            redisTemplate.opsForSet().add(redisKey,postId);
+        }
         return CommunityUtil.getJSONString(0,null,map);
     }
 }

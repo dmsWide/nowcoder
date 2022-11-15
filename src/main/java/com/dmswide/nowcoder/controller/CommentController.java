@@ -8,6 +8,8 @@ import com.dmswide.nowcoder.service.CommentService;
 import com.dmswide.nowcoder.service.DiscussPostService;
 import com.dmswide.nowcoder.util.CommunityConstant;
 import com.dmswide.nowcoder.util.HostHolder;
+import com.dmswide.nowcoder.util.RedisKeyUtil;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +29,8 @@ public class CommentController implements CommunityConstant {
     private EventProducer eventProducer;
     @Resource
     private DiscussPostService discussPostService;
+    @Resource
+    private RedisTemplate<String,Object> redisTemplate;
 
     @PostMapping("/add/{discussPostId}")
     public String addComment(@PathVariable("discussPostId") Integer discussPostId, Comment comment){
@@ -62,6 +66,10 @@ public class CommentController implements CommunityConstant {
                 .setEntityType(ENTITY_TYPE_POST)
                 .setEntityId(discussPostId);
             eventProducer.fireEvent(event);
+
+            // TODO: 2022/11/15 dmsWide 评论对象是帖子的时候才需要算分
+            String redisKey = RedisKeyUtil.getPostScoreKey();
+            redisTemplate.opsForSet().add(redisKey,discussPostId);
         }
 
         //转发和上面的发消息时异步进行的

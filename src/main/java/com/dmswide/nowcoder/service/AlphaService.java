@@ -7,6 +7,10 @@ import com.dmswide.nowcoder.entity.DiscussPost;
 import com.dmswide.nowcoder.entity.User;
 import com.dmswide.nowcoder.util.CommunityUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -26,6 +30,7 @@ import java.util.Date;
 //@Scope("prototype")
 public class AlphaService {
 
+    private static final Logger logger = LoggerFactory.getLogger(AlphaService.class);
     @Resource
     //@Qualifier("alphaDaoMybatisImpl")
     private AlphaDao alphaDao;
@@ -133,5 +138,16 @@ public class AlphaService {
                 return "ok";
             }
         });
+    }
+
+    //注解的作用:让该方法可以在多线程的环境下异步调用
+    @Async
+    public void execute(){
+        logger.info("execute......");
+    }
+
+    /*@Scheduled(initialDelay = 5000,fixedRate = 1000)*/
+    public void exec(){
+        logger.info("execute...");
     }
 }

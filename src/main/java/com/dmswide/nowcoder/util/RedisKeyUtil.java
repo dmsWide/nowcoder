@@ -14,6 +14,9 @@ public class RedisKeyUtil {
     private static final String PREFIX_UV = "uv";
     private static final String PREFIX_DAU = "dau";
 
+    // TODO: 2022/11/15 dmsWide 将帖子分数修改的帖子放进缓存中 到定时任务执行时计算全部的分数 来决定帖子的排序
+    private static final String PREFIX_POST = "post";
+
     //某个实体的赞:帖子或者回复
     //like:entity:entityType:entityId -> set(userId)
     public static String getEntityLikeKey(Integer entityType,Integer entityId){
@@ -76,5 +79,10 @@ public class RedisKeyUtil {
     // TODO: 2022/11/11 dmsWide 区间DAU
     public static String getDAUKey(String startDate,String endDate){
         return PREFIX_DAU + SPLIT + startDate + SPLIT + endDate;
+    }
+
+    // TODO: 2022/11/15 dmsWide 生成存储分数修改的帖子id的redisKey
+    public static String getPostScoreKey(){
+        return PREFIX_POST + SPLIT + "score";
     }
 }

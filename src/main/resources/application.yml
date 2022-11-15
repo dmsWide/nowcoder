@@ -10,6 +10,9 @@ server:
 #RedisProperties
 #KafkaProperties
 #ElasticsearchProperties
+#TaskExecutionProperties
+#TaskSchedulingProperties
+#QuartzProperties
 spring:
   thymeleaf:
     cache: false
@@ -58,9 +61,32 @@ spring:
       cluster-name: nowcoder
       #9300是tcp端口 9200是http端口
       cluster-nodes: 127.0.0.1:9300
-
-#elasticSearch:
-  #url: 127.0.0.1:9200
+  task:
+    execution:
+      pool:
+        core-size: 5
+        max-size: 15
+        #线程无法及时处理任务时将任务加入到队列 队列的容量配置
+        queue-capacity: 100
+    scheduling:
+      pool:
+        #定时任务线程数是可以预期的 有几个定时任务就需要多少个线程 上面的任务是浏览器向服务器发起的请求 任务数不确定所以需要设定一个任务数范围
+        size: 5
+  quartz:
+    job-store-type: jdbc
+    scheduler-name: communityScheduler
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceId: AUTO
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            isClustered: true
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 5
 
 # MybatisProperties
 mybatis:
@@ -86,3 +112,5 @@ nowcoder:
       http://localhost:8080
     upload:
       D:/work/data/upload
+
+

@@ -10,7 +10,7 @@ public interface DiscussPostService {
      */
 
     // TODO: 2022/10/14 dmsWide
-    List<DiscussPost> findDiscussPosts(Integer userId,Integer offset,Integer limit);
+    List<DiscussPost> findDiscussPosts(Integer userId,Integer offset,Integer limit,Integer orderMode);
 
     // TODO: 2022/10/14 dmsWide
     int findDiscussPostRows(Integer userId);
@@ -24,6 +24,10 @@ public interface DiscussPostService {
 
     // TODO: 2022/11/11 dmsWide 更新帖子类型
     int updateType(Integer id,Integer type);
+
     // TODO: 2022/11/11 dmsWide 更新帖子状态
     int updateStatus(Integer id,Integer status);
+
+    // TODO: 2022/11/15 dmsWide 更新帖子分数
+    int updateScore(Integer id,Double score);
 }

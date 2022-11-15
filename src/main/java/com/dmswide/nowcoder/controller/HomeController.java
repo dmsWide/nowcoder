@@ -10,6 +10,7 @@ import com.dmswide.nowcoder.util.CommunityConstant;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -26,13 +27,14 @@ public class HomeController implements CommunityConstant {
     @Resource
     private LikeService likeService;
     @GetMapping("/index")
-    public String getHomePage(Model model, Page page){
+    public String getHomePage(Model model, Page page,
+                              @RequestParam(name = "orderMode",defaultValue = "0") Integer orderMode){
         //隐含逻辑 需要注意的是 在调用方法之前spring mvc会自动创建和实例化方法参数(这里是model和page) 并且会将page注入到model
         //也就是自动完成model.addAttribute("page",page);
         page.setRows(discussPostService.findDiscussPostRows(0));
-        page.setPath("/index");
+        page.setPath("/index?orderMode=" + orderMode);
 
-        List<DiscussPost> list = discussPostService.findDiscussPosts(0, page.getOffset(), page.getLimit());
+        List<DiscussPost> list = discussPostService.findDiscussPosts(0, page.getOffset(), page.getLimit(),orderMode);
         List<Map<String,Object>> discussPosts = new ArrayList<>();
         if(list != null){
             list.forEach(post->{
@@ -49,6 +51,8 @@ public class HomeController implements CommunityConstant {
             });
         }
         model.addAttribute("discussPosts",discussPosts);
+        // TODO: 2022/11/15 dmsWide 将orderMode传给模板
+        model.addAttribute("orderMode",orderMode);
         //这里写成 "/index" 会报错 templates//index
         return "index";
     }

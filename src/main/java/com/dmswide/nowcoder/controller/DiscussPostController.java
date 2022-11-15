@@ -9,6 +9,8 @@ import com.dmswide.nowcoder.service.impl.UserServiceImpl;
 import com.dmswide.nowcoder.util.CommunityConstant;
 import com.dmswide.nowcoder.util.CommunityUtil;
 import com.dmswide.nowcoder.util.HostHolder;
+import com.dmswide.nowcoder.util.RedisKeyUtil;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,9 @@ public class DiscussPostController implements CommunityConstant {
     private LikeService likeService;
     @Resource
     private EventProducer eventProducer;
+    // TODO: 2022/11/15 dmsWide 在新增帖子以及对帖子分数有修改的时候将帖子id存入到redis中准备重新计算分数
+    @Resource
+    private RedisTemplate<String,Object> redisTemplate;
 
     @PostMapping("/add")
     @ResponseBody
@@ -54,6 +59,10 @@ public class DiscussPostController implements CommunityConstant {
             .setEntityType(ENTITY_TYPE_POST)
             .setEntityId(discussPost.getId());//这里在KeyProperty="id"设置后生效
         eventProducer.fireEvent(event);
+
+        // TODO: 2022/11/15 dmsWide 新增帖子时计算帖子的初始分数
+        String redisKey = RedisKeyUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey,discussPost.getId());
 
         //报错的情况 后续统一处理
         return CommunityUtil.getJSONString(0,"发帖成功");
@@ -204,6 +213,10 @@ public class DiscussPostController implements CommunityConstant {
             .setEntityType(ENTITY_TYPE_POST)
             .setEntityId(id);
         eventProducer.fireEvent(event);
+
+        // TODO: 2022/11/15 dmsWide 加精操作 需要重新计算分数
+        String redisKey = RedisKeyUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey,id);
 
         //表示成功的状态
         return CommunityUtil.getJSONString(0);
