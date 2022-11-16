@@ -113,4 +113,9 @@ nowcoder:
     upload:
       D:/work/data/upload
 
+#wk
+wk:
+  image:
+   command: E:/Wkhtmltopdf/installation/wkhtmltopdf/bin/wkhtmltoimage
+   storage: E:/Wkhtmltopdf/wk-images
 
