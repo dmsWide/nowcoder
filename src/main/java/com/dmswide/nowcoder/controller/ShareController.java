@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,6 +33,8 @@ public class ShareController implements CommunityConstant{
     private String wkImageStorage;
     @Resource
     private EventProducer eventProducer;
+    @Value("${qiniu.bucket.share.url}")
+    private String shareBucketUrl;
 
     /** 长图接口的访问需要手动填写url来访问
      *  http://localhost:8080/community/share?htmlUrl=https://www.nowcoder.com/
@@ -45,7 +46,7 @@ public class ShareController implements CommunityConstant{
     public String share(String htmlUrl){
         String fileName = CommunityUtil.generateUUID();
 
-        //异步生成长图
+        //异步的方式生成长图
         Event event = new Event()
             .setTopic(TOPIC_SHARE)
             .setData("htmlUrl",htmlUrl)
@@ -55,10 +56,14 @@ public class ShareController implements CommunityConstant{
         eventProducer.fireEvent(event);
         //返回访问呢路径
         Map<String,Object> map = new HashMap<>();
-        map.put("shareUrl",domain + contextPath + "/share/image/" + fileName);
+        //map.put("shareUrl",domain + contextPath + "/share/image/" + fileName);
+        // TODO: 2022/11/17 dmsWide 本地服务器向七牛云服务器发送长图
+        map.put("shareUrl",shareBucketUrl + "/" + fileName);
+
         return CommunityUtil.getJSONString(0,null,map);
     }
 
+    // TODO: 2022/11/17 dmsWide 废弃该方法
     //获取长途，通过response向浏览器输出长图
     @GetMapping("/share/image/{fileName}")
     public void getShareImage(@PathVariable("fileName") String fileName, HttpServletResponse response) {

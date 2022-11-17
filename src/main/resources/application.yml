@@ -119,3 +119,17 @@ wk:
    command: E:/Wkhtmltopdf/installation/wkhtmltopdf/bin/wkhtmltoimage
    storage: E:/Wkhtmltopdf/wk-images
 
+#qiniuyun
+qiniu:
+  key:
+    #密钥
+    access: ADMykN68Hx4z5XdineNNPELBvOdaFzmY_wz3Yc7i
+    secret: 8EnK4sJ_y68SDdfpecUZB8Z7NdsRJr7SU6pxc8Oe
+  bucket:
+    #存储空间
+    header:
+      name: community-header-dmswide
+      url: http://rlfxaux50.hd-bkt.clouddn.com
+    share:
+      name: community-share-dmswide
+      url: http://rlfx26nng.hd-bkt.clouddn.com
