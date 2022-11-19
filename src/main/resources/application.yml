@@ -133,3 +133,11 @@ qiniu:
     share:
       name: community-share-dmswide
       url: http://rlfx26nng.hd-bkt.clouddn.com
+
+#Caffeine
+caffeine:
+  posts:
+    #缓存最大容量
+    max-size: 15
+    #缓存的最大时间为3 minutes
+    expire-seconds: 180
