@@ -1,0 +1,158 @@
+#ServerProperties
+server:
+  port: 8080
+  servlet:
+    context-path: /community
+
+#ThymeleafProperties
+#DataSourceProperties
+#MailProperties
+#RedisProperties
+#KafkaProperties
+#ElasticsearchProperties
+#TaskExecutionProperties
+#TaskSchedulingProperties
+#QuartzProperties
+spring:
+  thymeleaf:
+    cache: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/community?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    #根据需要修改成服务器的username和password
+    username: root
+    password: zhangweikuo1997+
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 15
+      minimum-idle: 5
+      idle-timeout: 30000
+  mail:
+    host: smtp.163.com
+    port: 465
+    username: dmswide@163.com
+    password: BMPYQSHNBYLJNPVI
+    protocol: smtps
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+            required: true
+          #邮件接受时间限制 ms
+          timeout: 10000
+          #连接时间限制
+          connectiontimeout: 10000
+          #邮件发送时间限制
+          writetimeout: 10000
+  redis:
+    #选择的库的编号
+    database: 11
+    host: localhost
+    port: 6379
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    consumer:
+      group-id: test-consumer-group
+      enable-auto-commit: true
+      #单位是ms
+      auto-commit-interval: 3000
+  data:
+    elasticsearch:
+      cluster-name: nowcoder
+      #9300是tcp端口 9200是http端口
+      cluster-nodes: 127.0.0.1:9300
+  task:
+    execution:
+      pool:
+        core-size: 5
+        max-size: 15
+        #线程无法及时处理任务时将任务加入到队列 队列的容量配置
+        queue-capacity: 100
+    scheduling:
+      pool:
+        #定时任务线程数是可以预期的 有几个定时任务就需要多少个线程 上面的任务是浏览器向服务器发起的请求 任务数不确定所以需要设定一个任务数范围
+        size: 5
+  quartz:
+    job-store-type: jdbc
+    scheduler-name: communityScheduler
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceId: AUTO
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            isClustered: true
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 5
+
+# MybatisProperties
+mybatis:
+  mapper-locations:
+    classpath:mapper/*.xml
+  type-aliases-package:
+    com.dmswide.nowcoder.entity
+  configuration:
+    use-generated-keys: true
+    map-underscore-to-camel-case: true
+
+#logger
+logging:
+  level:
+    #日志以debug级别监视该包
+    com.dmswide.nowcoder:
+      info
+
+#domain for mail sending
+nowcoder:
+  path:
+    #根据服务器的ip修改domain的ip地址 而且端口就不需要写了默认80端口
+    domain:
+      http://localhost:8080
+    #上传文件的地址也需要修改成服务器文件地址
+    upload:
+      D:/work/data/upload
+
+#wk
+wk:
+  image:
+   #命令地址需要修改
+   command: E:/Wkhtmltopdf/installation/wkhtmltopdf/bin/wkhtmltoimage
+   storage: E:/Wkhtmltopdf/wk-images
+
+#qiniuyun
+qiniu:
+  key:
+    #密钥
+    access: ADMykN68Hx4z5XdineNNPELBvOdaFzmY_wz3Yc7i
+    secret: 8EnK4sJ_y68SDdfpecUZB8Z7NdsRJr7SU6pxc8Oe
+  bucket:
+    #存储空间
+    header:
+      name: community-header-dmswide
+      url: http://rlfxaux50.hd-bkt.clouddn.com
+    share:
+      name: community-share-dmswide
+      url: http://rlfx26nng.hd-bkt.clouddn.com
+
+#Caffeine
+caffeine:
+  posts:
+    #缓存最大容量
+    max-size: 15
+    #缓存的最大时间为3 minutes
+    expire-seconds: 180
+
+#Spring Boot Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        #这里表示将二十多个端点全部都暴露 如果打算只暴露 某个/某几个 端点的话可以直接写端点即可
+        #和properties的写法不同 需要 quotes
+        include: "*"
+        #策略就是先暴露全部的端点 之后将某些不暴露的端点排除即可
+        exclude: info,caches

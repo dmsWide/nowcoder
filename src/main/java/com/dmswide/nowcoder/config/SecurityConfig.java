@@ -55,7 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
             .antMatchers(
                 "/discuss/delete",
                 // TODO: 2022/11/12 dmsWide 统计信息需要有管理员权限才能进行
-                "/data/**"
+                "/data/**",
+                // TODO: 2022/11/21 dmsWide 自定义EndPoint 并且设置访问权限是ADMIN
+                "/actuator/**"
             )
             .hasAnyAuthority(
                 //管理员才能删除
