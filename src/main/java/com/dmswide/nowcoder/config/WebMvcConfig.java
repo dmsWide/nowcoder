@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 
 /**
  * 一般的config配置类第三方的类 拦截器配置类有些特殊
- * 需要实现接口WebMvcConfigurer 来注册拦截器 来进行请求路径的拦截和排除特定的请求路径
+ * 需要实现接口WebMvcConfigurer来注册拦截器，来进行请求路径的拦截和排除特定的请求路径
  */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {

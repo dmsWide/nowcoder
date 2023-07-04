@@ -44,7 +44,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public int addMessage(Message message) {
-        //先过滤
+        //将消息的主体内容先过滤之后存入数据库
         message.setContent(HtmlUtils.htmlEscape(message.getContent()));
         message.setContent(sensitiveWordsFilter.filter(message.getContent()));
 

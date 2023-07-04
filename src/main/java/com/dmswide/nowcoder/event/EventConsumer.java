@@ -35,6 +35,7 @@ import java.util.concurrent.Future;
 
 @Component
 public class EventConsumer implements CommunityConstant {
+    //日志记录
     private static final Logger logger = LoggerFactory.getLogger(EventConsumer.class);
 
     @Resource
@@ -57,34 +58,44 @@ public class EventConsumer implements CommunityConstant {
     //注入执行定时任务的线程池
     @Resource
     private ThreadPoolTaskScheduler threadPoolTaskScheduler;
+
+    //消费 评论、点赞、关注 事件
     @KafkaListener(topics = {TOPIC_COMMENT,TOPIC_LIKE,TOPIC_FOLLOW})
     public void handleMultiEvents(ConsumerRecord<String,Object> record){
         if(record == null || record.value() == null){
             logger.error("消息的内容为空");
             return;
         }
+
+        //json字符串转为Event对象
         Event event = JSONObject.parseObject(record.value().toString(), Event.class);
+
         if(event == null){
             logger.error("消息格式错误");
             return;
         }
         //系统发送站内同时
+        //status没有设置 默认设置为0即为有效状态
         Message message = new Message();
         message.setFromId(SYSTEM_USER_ID);
         message.setToId(event.getEntityUserId());
         message.setConversationId(event.getTopic());
         message.setCreateTime(new Date());
 
+        //不能直接放到Message对象的属性中就存放到content中
         //额外的提示信息数据 message的content字段
         Map<String,Object> content = new HashMap<>();
         content.put("userId",event.getUserId());
         content.put("entityType",event.getEntityType());
         content.put("entityId",event.getEntityId());
+        //data数据也存入到content中
         if(!event.getData().isEmpty()) {
             for(Map.Entry<String,Object> entry : event.getData().entrySet()){
                 content.put(entry.getKey(),entry.getValue());
             }
         }
+
+        //将对象转成json字符串存入数据库
         message.setContent(JSONObject.toJSONString(content));
 
         messageService.addMessage(message);
@@ -158,6 +169,7 @@ public class EventConsumer implements CommunityConstant {
         task.setFuture(future);
     }
 
+     //上传长图任务
      class UploadTask implements Runnable{
         private String fileName;
         private String suffix;
@@ -166,7 +178,7 @@ public class EventConsumer implements CommunityConstant {
 
         //确保定时任务最终无论成功或者失败一定会停止
         //生成长图任务开始时间
-        private long startTime;
+        private final long startTime;
         //重复上传到七牛云的次数
         private int uploadTimes;
 

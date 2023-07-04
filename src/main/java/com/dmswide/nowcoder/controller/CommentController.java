@@ -47,19 +47,22 @@ public class CommentController implements CommunityConstant {
             .setEntityType(comment.getEntityType())
             .setEntityId(comment.getEntityId())
             .setData("postId",discussPostId);
+
         if(comment.getEntityType() == ENTITY_TYPE_POST){
+            //实体类型为帖子时 获取发帖人的id
             DiscussPost target = discussPostService.findDiscussPostById(comment.getEntityId());
             event.setEntityUserId(target.getUserId());
         }else if(comment.getEntityType() == ENTITY_TYPE_COMMENT){
+            //实体类型为评论时 获取发布评论人的id
             Comment target = commentService.findCommentById(comment.getEntityId());
             event.setEntityUserId(target.getUserId());
         }
 
         eventProducer.fireEvent(event);
 
-        // TODO: 2022/11/8 dmsWide 评论帖子的时候 会修改帖子的评论数量修改了帖子 这是还需触发事件 把es中的帖子的数据覆盖更新成最新的
+        // TODO: 2022/11/8 dmsWide 评论帖子的时候 会修改帖子的评论数量修改了帖子 这时还需触发事件 把es中的帖子的数据覆盖更新成最新的
         if(comment.getEntityType() == ENTITY_TYPE_POST){
-            //触发发帖事件
+            //触发发帖事件 publish事件
             event = new Event()
                 .setTopic(TOPIC_PUBLISH)
                 .setUserId(comment.getUserId())

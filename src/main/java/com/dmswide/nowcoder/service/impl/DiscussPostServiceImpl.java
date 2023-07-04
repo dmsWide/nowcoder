@@ -27,12 +27,17 @@ public class DiscussPostServiceImpl implements DiscussPostService {
     private DiscussPostMapper discussPostMapper;
     @Resource
     private SensitiveWordsFilter sensitiveWordsFilter;
+
+    //Caffeine本地缓存
     @Value("${caffeine.posts.max-size}")
     private Integer maxSize;
     @Value("${caffeine.posts.expire-seconds}")
     private Integer expireSeconds;
 
     // TODO: 2022/11/17 dmsWide Caffeine的主要接口是Cache主要的子接口是LoadingCaching 和 AsyncLoadingCaching
+    //LoadingCache是同步缓存，一般使用LoadingCache
+    //AsyncLoadingCache是异步缓存，支持并发的取数据。
+    //一个缓存帖子列表，另一个缓存帖子总的行数。
     //帖子列表缓存 按照key缓存value
     private LoadingCache<String,List<DiscussPost>> postListCache;
     //帖子总数缓存
@@ -47,7 +52,7 @@ public class DiscussPostServiceImpl implements DiscussPostService {
             .build(new CacheLoader<String, List<DiscussPost>>() {
                 @Nullable
                 @Override
-                //尝试从缓存中查询数据 查询不到时 从数据中初始化数据到缓存中
+                //尝试从缓存中查询数据 查询不到时 从数据库中初始化数据到缓存中
                 public List<DiscussPost> load(@NonNull String key) throws Exception {
                     if(key.length() == 0){
                         throw new IllegalArgumentException("参数错误");
@@ -60,6 +65,7 @@ public class DiscussPostServiceImpl implements DiscussPostService {
                     int limit = Integer.parseInt(params[1]);
                     //这里可以访问二级缓存 redis 之后再访问mysql数据库
                     logger.info("从数据库中加载帖子数据");
+                    //从数据中加载帖子
                     return discussPostMapper.selectDiscussPosts(0,offset,limit,1);
                 }
             });

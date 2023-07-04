@@ -22,9 +22,11 @@ public class MessageInterceptor implements HandlerInterceptor {
     @Resource
     private MessageService messageService;
 
+    //调用controller方法之后 返回到模板之前调用postHandle
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         User user = hostHolder.getUser();
+        //统计当前用户未读私信数量和未读系统通知数量
         if(user != null && modelAndView != null){
             int lettersUnreadCount = messageService.findLettersUnreadCount(user.getId(), null);
             int noticeUnreadCount = messageService.findNoticeUnreadCount(user.getId(), null);

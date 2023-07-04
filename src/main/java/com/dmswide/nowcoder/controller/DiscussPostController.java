@@ -173,6 +173,7 @@ public class DiscussPostController implements CommunityConstant {
 
     // TODO: 2022/11/11 dmsWide 处理置顶帖子请求,修改帖子状态
     /**
+     * 帖子置顶
      * 类型设置为1
      * @param id 帖子id
      * @return
@@ -197,7 +198,8 @@ public class DiscussPostController implements CommunityConstant {
     // TODO: 2022/11/11 dmsWide 处理加精帖子请求
 
     /**
-     *  状态设置为1
+     * 帖子加精
+     * 状态设置为1
      * @param id 帖子id
      * @return
      */

@@ -48,6 +48,7 @@ public class PostScoreRefreshJob implements CommunityConstant, Job {
             return;
         }
         logger.info("[任务开始]正在刷新帖子分数" + operations.size());
+        //有新的需要更新分数的帖子
         while (operations.size() > 0){
             this.refresh((Integer)operations.pop());
         }

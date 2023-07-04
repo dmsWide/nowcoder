@@ -13,6 +13,13 @@ import org.springframework.scheduling.quartz.SimpleTriggerFactoryBean;
 //配置类 -> (默认读取内存中的配置，在yml中进行后才会持久化到db中)db -> quartz -> 访问db调度
 @Configuration
 public class QuartzConfig {
+
+    // FactoryBean可简化Bean的实例化过程:
+    // 1.通过FactoryBean封装Bean的实例化过程.
+    // 2.将FactoryBean装配到Spring容器里.
+    // 3.将FactoryBean注入给其他的Bean.
+    // 4.该Bean得到的是FactoryBean所管理的对象实例.
+
     //JobDetail -> JobDetailFactoryBean装入spring容器 ->注入JobDetailFactoryBean得到的是JobDetail的bean
     //通过JobDetailFactoryBean简化了JobDetail的管理过程
 

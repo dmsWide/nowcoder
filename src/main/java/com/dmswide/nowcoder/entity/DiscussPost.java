@@ -9,8 +9,11 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.util.Date;
 
 /**和es差生关联*/
+//indexName索引 type类型 shards分片 relpicas副本
+//将实体映射到discusspost索引，分片是3，副本为2
 @Document(indexName = "discusspost",type = "_doc",shards = 6,replicas = 3)
 public class DiscussPost {
+    //会把主键对应的数据存到id的字段上
     @Id
     private Integer id = 0;
 
@@ -18,15 +21,19 @@ public class DiscussPost {
     private Integer userId = 0;
 
     /*两个分词器不同*/
+    //由于搜帖子主要搜的是title和content所以做以下配置
+    //analyzer是存储时的解析器，searchAnalyzer是搜索时的解析器
     @Field(type = FieldType.Text,analyzer = "ik_max_word",searchAnalyzer = "ik_smart")
     private String title;
 
     @Field(type = FieldType.Text,analyzer = "ik_max_word",searchAnalyzer = "ik_smart")
     private String content;
 
+    //0是普通帖，1是置顶帖
     @Field(type = FieldType.Integer)
     private Integer type = 0;
 
+    //0是正常，1是精华，2是拉黑
     @Field(type = FieldType.Integer)
     private Integer status = 0;
 

@@ -14,6 +14,9 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 搭建前缀树（前缀树节点定义，读取文件添加词）以及过滤操作
+ */
 @Component
 public class SensitiveWordsFilter {
     private static final Logger logger = LoggerFactory.getLogger(SensitiveWordsFilter.class);
@@ -23,14 +26,17 @@ public class SensitiveWordsFilter {
     @PostConstruct
     public void init(){
         try(
-            InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("sensitive-words.txt");
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))
-        ){
-            String keyword;
-            while ((keyword = bufferedReader.readLine()) != null){
-                this.addKeyWord(keyword);
+            InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("sensitive-words.txt")
+        ) {
+            assert inputStream != null;
+            try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))
+            ){
+                String keyword;
+                while ((keyword = bufferedReader.readLine()) != null){
+                    this.addKeyWord(keyword);
+                }
             }
-        }catch (IOException e){
+        } catch (IOException e){
             logger.error("读取敏感词文件失败"+e.getMessage());
         }
 
@@ -61,14 +67,14 @@ public class SensitiveWordsFilter {
         TrieNode node = root;
         //指针2、3
         int begin= 0,position = 0;
-        //执行结果
+        //执行结果,处理后的文本内容
         StringBuilder stringBuilder = new StringBuilder();
 
         while(begin < text.length()){
             if(position < text.length()){
                 char c = text.charAt(position);
 
-                //跳过符号
+                //如果是符号，直接跳过
                 if(isSymbol(c)){
                     //若指针1处于根节点 将符号计入根节点 指针2向下走一步
                     if(node == root){
@@ -80,7 +86,7 @@ public class SensitiveWordsFilter {
                     continue;
                 }
 
-                //检查下级节点
+                //检查当前字符，是否为敏感字符，检查下级节点
                 node = node.getSubNode(c);
                 if(node == null){
                     //以begin开头的字符串不是敏感词
@@ -98,9 +104,9 @@ public class SensitiveWordsFilter {
                     node = root;
 
                 }else{
+                    //和begin之间的字符都是敏感词
                     position++;
                 }
-
             }else{
                 //position 遍历越界仍未发现敏感词
                 stringBuilder.append(text.charAt(begin));
@@ -112,10 +118,13 @@ public class SensitiveWordsFilter {
         return stringBuilder.toString();
     }
 
+    //当前字符是特殊符号
     private boolean isSymbol(Character character){
+        //isAsciiAlphanumeric:是否是大小写英文字母或阿拉伯数字
         //[0x2E80,0x9FFF]东亚文字
         return !CharUtils.isAsciiAlphanumeric(character) && (character < 0x2E80 || character > 0x9FFF);
     }
+
     private static class TrieNode{
         private boolean isKeywordEnd = false;
         //key和value分别表示:下级字符和下级子节点

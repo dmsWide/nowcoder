@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class HostHolder {
     //存的是各个线程的user对象
+    //ThreadLocal就是存放和取出Bean的容器
     private final ThreadLocal<User> users = new ThreadLocal<>();
     public void setUser(User user){
         users.set(user);

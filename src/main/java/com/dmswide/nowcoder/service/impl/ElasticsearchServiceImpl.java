@@ -35,18 +35,24 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
     @Resource
     private ElasticsearchTemplate elasticsearchTemplate;
 
+    //发布帖子时往es中增加帖子 对帖子评论时更新es服务器中帖子的commentcount 可以用saveDiscussPost实现
     @Override
     public void saveDiscussPost(DiscussPost discussPost) {
         discussPostRepository.save(discussPost);
     }
 
+    //删除帖子
     @Override
     public void deleteDiscussPost(int id) {
         discussPostRepository.deleteById(id);
     }
 
+    //搜索帖子，传入关键词，分页条件
+    //current是当前页从0开始，limit是每页显示多少条数据
+    //我们自己写的page的current是从1开始
     @Override
     public Page<DiscussPost> searchDiscussPost(String keyword, int current, int limit) {
+        //构造查询条件DML
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
             .withQuery(QueryBuilders.multiMatchQuery(keyword, "title", "content"))
             .withSort(SortBuilders.fieldSort("type").order(SortOrder.DESC))

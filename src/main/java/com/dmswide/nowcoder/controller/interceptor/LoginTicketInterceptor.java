@@ -28,17 +28,24 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String ticket = CookieUtil.getValue(request, "ticket");
         if(ticket != null){
-            //根据ticket查询对应的用户信息
+            //根据ticket去redis查询对应的用户信息
             LoginTicket loginTicket = userService.findLoginTicket(ticket);
+            //loginTicket.getStatus() == 0表示凭证有效
+            //loginTicket.getExpired().after(new Date())表示过期时间在当前时间之后
             if(loginTicket != null && loginTicket.getStatus() == 0 && loginTicket.getExpired().after(new Date())){
+
+                //根据cookie中的key=”ticket“->凭证ticket字符串->根据ticket获取LoginTicket对象->userId->redis中去查询用户信息
                 User user = userService.findUserById(loginTicket.getUserId());
                 hostHolder.setUser(user);
 
-                // TODO: 2022/11/10 dmsWide 构建用户认证的结果 SecurityContextHolder 用于security授权 postHandle()方法中还需要进行清理
+                // TODO: 2022/11/10 dmsWide 构建用户认证的结果 存入SecurityContextHolder 用于security授权 在postHandle()方法中需要进行清理
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
                     user,user.getPassword(),userService.getAuthorities(user.getId())
                 );
 
+                //SecurityContextHolder是SpringSecurity最基本的组件
+                //是用来存放SecurityContext的对象，默认是使用ThreadLocal实现的，保证本线程内所有的方法都可以获得SecurityContext对象
+                //在SecurityContextHolder中保存的是当前访问者的信息。Spring Security使用一个Authentication对象来表示这个信息
                 SecurityContextHolder.setContext(new SecurityContextImpl(authentication));
             }
         }
@@ -56,6 +63,7 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+
         hostHolder.clear();
 
         // TODO: 2022/11/10 dmsWide 清除SecurityContextHolder中的数据

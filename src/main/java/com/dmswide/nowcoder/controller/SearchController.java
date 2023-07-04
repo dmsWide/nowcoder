@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//去发帖代码下新增触发发帖事件，去增加评论代码下新增触发发帖事件
+//去消费者增加消费发帖事件的功能（从事件中查出帖子id查出帖子存到es服务器即可）
 @Controller
 public class SearchController implements CommunityConstant {
     @Resource

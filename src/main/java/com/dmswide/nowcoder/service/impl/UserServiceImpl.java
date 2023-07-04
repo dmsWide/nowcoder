@@ -65,6 +65,8 @@ public class UserServiceImpl implements UserService, CommunityConstant {
         if(StringUtils.isBlank(user.getEmail())){
             map.put("emailMsg","邮箱不能为空");
         }
+
+        //检查：用户名或者邮箱是否已经注册
         User user1 = userMapper.selectByName(user.getUsername());
         User user2 = userMapper.selectByEmail(user.getEmail());
         if(user1 != null && user2 != null){
@@ -78,12 +80,15 @@ public class UserServiceImpl implements UserService, CommunityConstant {
             map.put("emailMsg","邮箱已注册");
             return map;
         }
+
         //legal username|password|email
         user.setSalt(CommunityUtil.generateUUID().substring(0,5));
         user.setPassword(CommunityUtil.md5(user.getPassword() + user.getSalt()));
-
+        //用户类型为普通用户
         user.setType(0);
+        //账号还未激活
         user.setStatus(0);
+        //设置激活码
         user.setActivationCode(CommunityUtil.generateUUID());
         user.setCreateTime(new Date());
         user.setHeaderUrl(String.format("https://images.nowcoder.com/head/%dt.png",new Random().nextInt(1001)));
@@ -91,7 +96,6 @@ public class UserServiceImpl implements UserService, CommunityConstant {
         userMapper.insertUser(user);
 
         //发送html激活邮件
-
         //设置数据
         Context context = new Context();
         context.setVariable("email",user.getEmail());
@@ -100,6 +104,7 @@ public class UserServiceImpl implements UserService, CommunityConstant {
         //url格式:http://localhost/8080/community/activation/userId/activationCode
         //userId是mybatis生成的(配置了use-generated-keys和mapper的keyProperty="id"),用户没有携带这个id的
         String url = domain + contextPath + "/activation/" + user.getId() + "/" + user.getActivationCode();
+        //注册之后跳转到激活
         context.setVariable("url",url);
         //使用模板引擎生成邮件内容
         String text = templateEngine.process("/mail/activation", context);
@@ -118,10 +123,13 @@ public class UserServiceImpl implements UserService, CommunityConstant {
     public int activation(int userId,String code){
         User user = userMapper.selectById(userId);
         if(user.getStatus() == 1){
+            //已经激活 返回重复激活的提示信息
             return ACTIVATION_REPEAT;
         }else if(user.getActivationCode().equals(code)){
+            //激活码和数据库中的一致 说明可以激活 则激活账号
             userMapper.updateStatus(userId,1);
             clearCache(userId);
+            //返回激活成功
             return ACTIVATION_SUCCESS;
         }else{
             return ACTIVATION_FAILURE;

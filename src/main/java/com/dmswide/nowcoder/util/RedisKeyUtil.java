@@ -4,10 +4,15 @@ public class RedisKeyUtil {
     private static final String SPLIT = ":";
     private static final String PREFIX_ENTITY_LIKE = "like:entity";
     private static final String PREFIX_USER_LIKE = "like:user";
+    //关注
     private static final String PREFIX_FOLLOWEE = "followee";
+    //粉丝
     private static final String PREFIX_FOLLOWER = "follower";
+    //验证码
     private static final String PREFIX_KAPTCHA = "kaptcha";
+    //登录凭证
     private static final String PREFIX_TICKET = "ticket";
+
     private static final String PREFIX_USER = "user";
 
     // TODO: 2022/11/11 dmsWide 统计uv和dau

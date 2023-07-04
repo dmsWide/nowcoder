@@ -41,6 +41,7 @@ public class LoginController implements CommunityConstant {
         return "/site/login";
     }
 
+    //注册
     @PostMapping("/register")
     public String register(Model model,User user){
         Map<String, Object> map = userService.register(user);
@@ -53,11 +54,13 @@ public class LoginController implements CommunityConstant {
             model.addAttribute("usernameMsg",map.get("usernameMsg"));
             model.addAttribute("passwordMsg",map.get("passwordMsg"));
             model.addAttribute("emailMsg",map.get("emailMsg"));
+            //重新注册
             return "/site/register";
         }
     }
 
     /**
+     * 注册完成之后 跳转到激活页面激活账号
      * http://localhost/8080/community/activation/userId/activationCode
      * @return 返回网页
      */
@@ -80,6 +83,7 @@ public class LoginController implements CommunityConstant {
         return "/site/operate-result";
     }
 
+    //验证码的生成
     @GetMapping("/kaptcha")
     public void getKaptcha(/*HttpSession session,*/ HttpServletResponse response){
         String text = kaptchaProducer.createText();
@@ -95,13 +99,14 @@ public class LoginController implements CommunityConstant {
         cookie.setPath(contextPath);
         response.addCookie(cookie);
 
-        //验证码存入redis
+        //验证码文本存入redis
         String redisKey = RedisKeyUtil.getKaptchaKey(kaptchaOwner);
         redisTemplate.opsForValue().set(redisKey,text,60, TimeUnit.SECONDS);
 
         //验证码图片输出到浏览器
         response.setContentType("image/png");
         try {
+            //将验证码图片输出到网页的相应位置上
             ServletOutputStream outputStream = response.getOutputStream();
             ImageIO.write(image,"png",outputStream);
         } catch (IOException e) {

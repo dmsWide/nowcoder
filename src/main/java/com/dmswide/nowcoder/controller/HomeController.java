@@ -31,6 +31,7 @@ public class HomeController implements CommunityConstant {
     public String root(){
         return "forward:/index";
     }
+
     @GetMapping("/index")
     public String getHomePage(Model model, Page page,
                               @RequestParam(name = "orderMode",defaultValue = "0") Integer orderMode){
@@ -62,11 +63,13 @@ public class HomeController implements CommunityConstant {
         return "index";
     }
 
+    //500 服务器异常
     @GetMapping("/error")
     public String getErrorPage(){
         return "/error/500";
     }
 
+    //404 拒绝,资源找不到
     @GetMapping("/denied")
     public String getDeniedPage(){
         return "/error/404";

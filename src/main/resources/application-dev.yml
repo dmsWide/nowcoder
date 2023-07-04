@@ -103,7 +103,7 @@ logging:
   level:
     #日志以debug级别监视该包
     com.dmswide.nowcoder:
-      info
+      debug
 
 #domain for mail sending
 nowcoder:

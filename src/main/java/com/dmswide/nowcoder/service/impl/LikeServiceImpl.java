@@ -17,9 +17,9 @@ public class LikeServiceImpl implements LikeService {
 
     /**
      *
-     * @param userId 点赞用户
+     * @param userId 点赞用户Id
      * @param entityType 实体类型
-     * @param entityId 实体id
+     * @param entityId 实体Id
      * @param entityUserId 被赞用户 因为需要得到被赞用户的总的被赞数量
      */
     //点赞
@@ -30,10 +30,15 @@ public class LikeServiceImpl implements LikeService {
         redisTemplate.execute(new SessionCallback(){
             @Override
             public Object execute(RedisOperations operations) throws DataAccessException {
+                //当前实体类型和实体id生成redisKey
                 String entityLikeKey = RedisKeyUtil.getEntityLikeKey(entityType, entityId);
+
                 //被赞用户id形成redis中的key
                 String userLikeKey = RedisKeyUtil.getUserLikeKey(entityUserId);
+
+                //判断当前点在的用户是否已经存在点赞的实体的set中
                 Boolean isMember = operations.opsForSet().isMember(entityLikeKey, userId);
+
                 operations.multi();
                 if(isMember != null){
                     if(isMember){
